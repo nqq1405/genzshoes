@@ -51,7 +51,8 @@ public class ImageController {
                 image.setName(file.getName());
                 image.setSize(file.getSize());
                 image.setType(extension);
-                String link = "/media/static/" + image.getId() + "." + extension;
+//                String link = "/media/static/" + image.getId() + "." + extension;
+                String link = "https://mkyong.com/wp-content/uploads/2019/04/spring-boot-send-email-project.png";
                 image.setLink(link);
                 image.setCreatedAt(new Timestamp(System.currentTimeMillis()));
                 image.setCreatedBy(((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser());
