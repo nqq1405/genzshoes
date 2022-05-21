@@ -51,23 +51,23 @@ public class ImageController {
                 image.setName(file.getName());
                 image.setSize(file.getSize());
                 image.setType(extension);
-//                String link = "/media/static/" + image.getId() + "." + extension;
-                String link = "https://mkyong.com/wp-content/uploads/2019/04/spring-boot-send-email-project.png";
+                String link = "/media/static/" + image.getId() + "." + extension;
+//                String link = "https://mkyong.com/wp-content/uploads/2019/04/spring-boot-send-email-project.png";
                 image.setLink(link);
                 image.setCreatedAt(new Timestamp(System.currentTimeMillis()));
                 image.setCreatedBy(((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser());
 
                 //Tạo file
-//                File serveFile = new File(UPLOAD_DIR + "/" + image.getId() + "." + extension);
-//                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(serveFile));
-//                bos.write(file.getBytes());
-//                bos.close();
+                File serveFile = new File(UPLOAD_DIR + "/" + image.getId() + "." + extension);
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(serveFile));
+                bos.write(file.getBytes());
+                bos.close();
 
                 imageService.saveImage(image);
                 return ResponseEntity.ok(link);
 
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
                 throw new InternalServerException("Có lỗi trong quá trình upload file!");
             }
         }
