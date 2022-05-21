@@ -58,10 +58,10 @@ public class ImageController {
                 image.setCreatedBy(((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser());
 
                 //Tạo file
-                File serveFile = new File(UPLOAD_DIR + "/" + image.getId() + "." + extension);
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(serveFile));
-                bos.write(file.getBytes());
-                bos.close();
+//                File serveFile = new File(UPLOAD_DIR + "/" + image.getId() + "." + extension);
+//                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(serveFile));
+//                bos.write(file.getBytes());
+//                bos.close();
 
                 imageService.saveImage(image);
                 return ResponseEntity.ok(link);
