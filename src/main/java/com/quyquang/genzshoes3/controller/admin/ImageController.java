@@ -66,6 +66,7 @@ public class ImageController {
                 return ResponseEntity.ok(link);
 
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 throw new InternalServerException("Có lỗi trong quá trình upload file!");
             }
         }
