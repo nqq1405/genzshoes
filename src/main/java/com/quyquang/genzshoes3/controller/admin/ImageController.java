@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @RestController
 public class ImageController {
-    private static String UPLOAD_DIR = "/media/upload";
+    private static String UPLOAD_DIR = System.getProperty("user.home") + "/media/upload";
 
     @Autowired
     private ImageService imageService;
