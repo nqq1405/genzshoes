@@ -23,7 +23,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.quyquang.genzshoes3.config.Contant.*;
+import static com.quyquang.genzshoes3.config.Constants.*;
 
 @Controller
 public class HomeController {

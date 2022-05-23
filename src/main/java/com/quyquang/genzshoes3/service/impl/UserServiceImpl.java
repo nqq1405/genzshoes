@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.quyquang.genzshoes3.config.Contant.LIMIT_USER;
+import static com.quyquang.genzshoes3.config.Constants.LIMIT_USER;
 
 @Component
 public class UserServiceImpl implements UserService {
@@ -78,5 +78,12 @@ public class UserServiceImpl implements UserService {
         user.setAddress(updateProfileRequest.getAddress());
 
         return userRepository.save(user);
+    }
+
+    @Override
+    public void resetPassword(User user, String password) {
+        String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        user.setPassword(hash);
+        userRepository.save(user);
     }
 }

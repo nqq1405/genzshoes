@@ -29,7 +29,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
 
-import static com.quyquang.genzshoes3.config.Contant.SIZE_VN;
+import static com.quyquang.genzshoes3.config.Constants.SIZE_VN;
 
 @Slf4j
 @Controller

@@ -23,7 +23,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-import static com.quyquang.genzshoes3.config.Contant.*;
+import static com.quyquang.genzshoes3.config.Constants.*;
 
 @Component
 public class PostServiceImpl implements PostService {

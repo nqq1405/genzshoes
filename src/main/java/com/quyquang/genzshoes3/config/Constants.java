@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Contant {
+public class Constants {
+
+    // 15 Phút
+    public static final int TIME_EXPIRED_VERIFY = 15;
 
     // 7 ngày
     public static final int MAX_AGE_COOKIE = 7 * 24 * 60 * 60;

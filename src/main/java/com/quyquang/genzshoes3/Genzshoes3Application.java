@@ -8,8 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.mail.internet.MimeMessage;
 import java.util.List;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
@@ -28,6 +32,16 @@ public class Genzshoes3Application {
     @Bean
     CommandLineRunner runner(){
         return args -> {
+//            var mailMessage = new SimpleMailMessage();
+//
+//            mailMessage.setTo("dothihien20211@gmail.com");
+//            mailMessage.setSubject("Reset pass");
+//            mailMessage.setText("text 1 message999999");
+//
+//            mailMessage.setFrom("resetpass1405@gmail.com");
+//
+//            javaMailSender.send(mailMessage);
+
 //            User user = new User();
 //            user.setId(10L);
 //            user.setPhone("0969708715");

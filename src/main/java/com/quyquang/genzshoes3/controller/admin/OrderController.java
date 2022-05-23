@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.quyquang.genzshoes3.config.Contant.*;
+import static com.quyquang.genzshoes3.config.Constants.*;
 
 @Controller
 public class OrderController {

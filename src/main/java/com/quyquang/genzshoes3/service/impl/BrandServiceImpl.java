@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-import static com.quyquang.genzshoes3.config.Contant.LIMIT_BRAND;
+import static com.quyquang.genzshoes3.config.Constants.LIMIT_BRAND;
 
 @Component
 public class BrandServiceImpl implements BrandService {

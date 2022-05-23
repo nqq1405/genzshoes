@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-import static com.quyquang.genzshoes3.config.Contant.LIMIT_CATEGORY;
+import static com.quyquang.genzshoes3.config.Constants.LIMIT_CATEGORY;
 
 @Component
 public class CategoryServiceImpl implements CategoryService {
