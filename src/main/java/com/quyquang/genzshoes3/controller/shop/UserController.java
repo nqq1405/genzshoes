@@ -106,6 +106,10 @@ public class UserController {
             ));
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
+            List<String> roles = user.getUser().getRoles();
+            if(roles.contains("ADMIN")) {
+                throw new BadRequestException("");
+            }
 
             //Gen token
             String token = jwtTokenUtil.generateToken((CustomUserDetails) authentication.getPrincipal());

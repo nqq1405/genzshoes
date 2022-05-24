@@ -17,4 +17,10 @@ public interface UserRepository extends JpaRepository<User,Long> {
             "AND u.email LIKE CONCAT('%',?3,'%') ",nativeQuery = true)
     Page<User> adminListUserPages(String fullName, String phone, String email, Pageable pageable);
 
+    // findUserByEmail
+//    @Query(nativeQuery = true,
+//        value = "SELECT * FROM users u WHERE FUNCTION('JSON_EXTRAC', u, '$.roles')=?1"
+//    )
+//    User findUserByEmail(String email);
+    // findAdminByEmail
 }

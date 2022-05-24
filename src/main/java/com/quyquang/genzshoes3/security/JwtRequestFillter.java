@@ -28,34 +28,35 @@ public class JwtRequestFillter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+
         //Lấy token từ cookie
         String token;
-        Cookie cookie = WebUtils.getCookie(httpServletRequest, "JWT_TOKEN");
+        Cookie cookie = WebUtils.getCookie(request, "JWT_TOKEN");
         if (cookie != null) {
             token = cookie.getValue();
         } else {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
+            filterChain.doFilter(request, httpServletResponse);
             return;
         }
 
         // Parse thông tin từ token
         Claims claims = jwtTokenUtil.getClaimsFromToken(token);
         if (claims == null) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
+            filterChain.doFilter(request, httpServletResponse);
             return;
         }
 
         // Tạo object Authentication
         UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(claims);
         if (authenticationToken == null) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
+            filterChain.doFilter(request, httpServletResponse);
             return;
         }
 
         // Xác thực thành công, lưu object Authentication vào SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        filterChain.doFilter(request, httpServletResponse);
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(Claims claims) {
