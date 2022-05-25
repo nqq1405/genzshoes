@@ -98,6 +98,7 @@ public class UserServiceImpl implements UserService {
             User user = new User();
             user.setEmail(email);
             user.setFullName(name);
+            user.setPhone("Trống");
             user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             user.setProvider(Provider.GOOGLE);
             user.setStatus(true);
