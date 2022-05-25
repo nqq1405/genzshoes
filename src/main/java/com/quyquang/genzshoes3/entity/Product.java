@@ -124,7 +124,7 @@ import java.util.List;
                 "INNER JOIN product_category " +
                 "ON product.id = product_category.product_id " +
                 "WHERE product.status = 1 AND product.brand_id IN (?1) AND product_category.category_id IN (?2) " +
-                "AND product.price > ?3 AND product.price < ?4) as d " +
+                "AND product.sale_price > ?3 AND product.sale_price < ?4) as d " +
                 "INNER JOIN product_size " +
                 "ON product_size.product_id = d.id " +
                 "WHERE product_size.size IN (?5) " +
@@ -139,7 +139,7 @@ import java.util.List;
                 "INNER JOIN product_category " +
                 "ON product.id = product_category.product_id " +
                 "WHERE product.status = 1 AND product.brand_id IN (?1) AND product_category.category_id IN (?2) " +
-                "AND product.price > ?3 AND product.price < ?4 " +
+                "AND product.sale_price > ?3 AND product.sale_price < ?4 " +
                 "LIMIT ?5 " +
                 "OFFSET ?6"
 )
