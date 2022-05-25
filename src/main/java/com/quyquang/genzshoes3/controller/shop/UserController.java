@@ -1,6 +1,7 @@
 package com.quyquang.genzshoes3.controller.shop;
 
 import com.quyquang.genzshoes3.config.Constants;
+import com.quyquang.genzshoes3.entity.Provider;
 import com.quyquang.genzshoes3.entity.User;
 import com.quyquang.genzshoes3.entity.Verify;
 import com.quyquang.genzshoes3.exception.BadRequestException;
@@ -91,6 +92,7 @@ public class UserController {
         Cookie cookie = new Cookie("JWT_TOKEN", token);
         cookie.setMaxAge(MAX_AGE_COOKIE);
         cookie.setPath("/");
+        cookie.setHttpOnly(true);
         response.addCookie(cookie);
 
         return ResponseEntity.ok(UserMapper.toUserDTO(user));
@@ -107,9 +109,10 @@ public class UserController {
             CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
             List<String> roles = user.getUser().getRoles();
-            if(roles.contains("ADMIN")) {
-                throw new BadRequestException("");
-            }
+            if(roles.contains("ADMIN"))
+                throw new BadRequestException("Email hoặc mật khẩu không chính xác!");
+            if(user.getUser().getProvider() == Provider.GOOGLE)
+                throw new BadRequestException("Tài khoản của bạn trước đó đã đăng nhâp bằng google hãy sử dụng cách thức đăng nhập bằng google để tiếp tục");
 
             //Gen token
             String token = jwtTokenUtil.generateToken((CustomUserDetails) authentication.getPrincipal());
@@ -118,12 +121,14 @@ public class UserController {
             Cookie cookie = new Cookie("JWT_TOKEN", token);
             cookie.setMaxAge(MAX_AGE_COOKIE);
             cookie.setPath("/");
+            cookie.setHttpOnly(true);
             response.addCookie(cookie);
 
-            return ResponseEntity.ok(UserMapper.toUserDTO(((CustomUserDetails) authentication.getPrincipal()).getUser()));
+            return ResponseEntity.ok(UserMapper.toUserDTO(((CustomUserDetails)authentication.getPrincipal()).getUser()));
+        } catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
         } catch (Exception ex) {
             throw new BadRequestException("Email hoặc mật khẩu không chính xác!");
-
         }
     }
 
@@ -150,7 +155,8 @@ public class UserController {
 
         return ResponseEntity.ok("Cập nhật thành công");
     }
-// onerror="this.src='shop/images/default.png'"
+
+    // onerror="this.src='shop/images/default.png'"
     // forgot password
     @GetMapping("/forgot-password")
     public String getShowForgotPasswordFrom() {
@@ -163,7 +169,7 @@ public class UserController {
         String token = RandomString.make(35);
         User user = userRepository.findByEmail(email);
 
-        if(user == null){
+        if (user == null) {
             model.addAttribute("error", "không tìm thấy email của bạn.");
             return "shop/forgot_password";
         }
@@ -176,7 +182,7 @@ public class UserController {
             verify.setExpiredAt(LocalDateTime.now().plusMinutes(Constants.TIME_EXPIRED_VERIFY));
             verifyRepository.save(verify);
             model.addAttribute("message", "chúng tôi đã gửi 1 email đặt lại mật khẩu đến email của bạn.");
-        }catch (UnsupportedEncodingException | MessagingException e) {
+        } catch (UnsupportedEncodingException | MessagingException e) {
             System.out.println(e);
             model.addAttribute("error", "Error while sending email");
         }
@@ -216,7 +222,7 @@ public class UserController {
             model.addAttribute("message", "Xác thực không thành công kiểm tra lại email chúng tôi đã gửi cho bạn.");
             return "shop/message_password";
         }
-        if(LocalDateTime.now().isAfter(verify.getExpiredAt())){
+        if (LocalDateTime.now().isAfter(verify.getExpiredAt())) {
             model.addAttribute("title", "Time out");
             model.addAttribute("message", "link của bạn đã hết hạn.");
             return "shop/message_password";

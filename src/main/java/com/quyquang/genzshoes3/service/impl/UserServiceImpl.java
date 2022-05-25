@@ -1,5 +1,6 @@
 package com.quyquang.genzshoes3.service.impl;
 
+import com.quyquang.genzshoes3.entity.Provider;
 import com.quyquang.genzshoes3.entity.User;
 import com.quyquang.genzshoes3.exception.BadRequestException;
 import com.quyquang.genzshoes3.model.dto.UserDTO;
@@ -17,7 +18,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.quyquang.genzshoes3.config.Constants.LIMIT_USER;
@@ -85,5 +88,24 @@ public class UserServiceImpl implements UserService {
         String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
         user.setPassword(hash);
         userRepository.save(user);
+    }
+
+    @Override
+    public void processOAuthPostLogin(String email, String name) {
+        User existUser = userRepository.findByEmail(email);
+
+        if (existUser == null) {
+            User user = new User();
+            user.setEmail(email);
+            user.setFullName(name);
+            user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            user.setProvider(Provider.GOOGLE);
+            user.setStatus(true);
+            user.setRoles(new ArrayList<>(Arrays.asList("USER")));
+            userRepository.save(user);
+        }else if (existUser.getProvider().equals(Provider.LOCAL)){
+            existUser.setProvider(Provider.GOOGLE);
+            userRepository.save(existUser);
+        }
     }
 }

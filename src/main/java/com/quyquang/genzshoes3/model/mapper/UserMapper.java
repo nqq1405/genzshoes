@@ -1,5 +1,6 @@
 package com.quyquang.genzshoes3.model.mapper;
 
+import com.quyquang.genzshoes3.entity.Provider;
 import com.quyquang.genzshoes3.entity.User;
 import com.quyquang.genzshoes3.model.dto.UserDTO;
 import com.quyquang.genzshoes3.model.request.CreateUserRequest;
@@ -33,6 +34,7 @@ public class UserMapper {
         user.setPhone(createUserRequest.getPhone());
         user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         user.setStatus(true);
+        user.setProvider(Provider.LOCAL);
         user.setRoles(new ArrayList<>(Arrays.asList("USER")));
 
         return user;

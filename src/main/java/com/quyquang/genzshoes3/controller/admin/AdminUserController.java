@@ -94,11 +94,12 @@ public class AdminUserController {
             Cookie cookie = new Cookie("JWT_TOKEN", token);
             cookie.setMaxAge(MAX_AGE_COOKIE);
             cookie.setPath("/");
+            cookie.setHttpOnly(true);
             response.addCookie(cookie);
 
             return "redirect:/admin";
         }catch (Exception e){
-            model.addAttribute("message", "Tài khoản hoặc mật khẩu không chính xác !");
+            model.addAttribute("message", "Tài khoản hoặc mật khẩu không chính xác.");
             return "admin/login_admin";
         }
     }

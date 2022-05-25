@@ -1,6 +1,7 @@
 package com.quyquang.genzshoes3.security;
 
 import com.quyquang.genzshoes3.entity.User;
+import com.quyquang.genzshoes3.model.dto.CustomOauth2User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,13 @@ public class CustomUserDetails implements UserDetails {
             roles.add(new SimpleGrantedAuthority("ROLE_" + role));
         }
         return roles;
+    }
+
+    public static CustomUserDetails customUserDetails (CustomOauth2User customOauth2User ){
+        User user = new User();
+        user.setEmail(customOauth2User.getEmail());
+        user.setFullName(customOauth2User.getName());
+        return new CustomUserDetails(user);
     }
 
     @Override

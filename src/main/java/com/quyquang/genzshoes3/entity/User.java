@@ -30,8 +30,11 @@ public class User {
     private String fullName;
     @Column(name = "email",nullable = false,length = 200)
     private String email;
-    @Column(name = "password",nullable = false)
+    @Column(name = "password")
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private Provider provider;
     @Column(name = "phone")
     private String phone;
     @Column(name = "address")
@@ -43,9 +46,10 @@ public class User {
     private List<String> roles;
     @Column(name = "status",columnDefinition = "BOOLEAN")
     private boolean status;
-    @Column(name = "created_at")
 
+    @Column(name = "created_at")
     private Timestamp createdAt;
     @Column(name = "modified_at")
     private Timestamp modifiedAt;
 }
+

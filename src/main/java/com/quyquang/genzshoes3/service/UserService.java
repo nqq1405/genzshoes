@@ -24,4 +24,6 @@ public interface UserService {
     User updateProfile(User user, UpdateProfileRequest updateProfileRequest);
 
     void resetPassword(User user, String password);
+
+    void processOAuthPostLogin(String email, String name);
 }

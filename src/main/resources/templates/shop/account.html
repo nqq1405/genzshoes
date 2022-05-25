@@ -52,7 +52,7 @@
                                 <div class="text required-label">Email</div>
                                 <input class="form-control" disabled="disabled" th:value="${user_email}"/>
                             </div>
-                            <div class="password item-row col-md-10">
+                            <div class="password item-row col-md-10" th:if="${user_provider == 'LOCAL'}">
                                 <div class="text required-label">Mật khẩu</div>
                                 <div class="password-wrapper">
                                     <input class="form-control" type="password" disabled="disabled" autocomplete="autocomplete" value="******"/>
