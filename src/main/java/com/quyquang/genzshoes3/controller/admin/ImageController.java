@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -28,50 +29,62 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+//    @PostMapping("/api/upload/files")
+//    public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) {
+//        //Tạo thư mục chứa ảnh nếu không tồn tại
+//        File uploadDir = new File(UPLOAD_DIR);
+//        if (!uploadDir.exists()) {
+//            uploadDir.mkdirs();
+//        }
+//
+//        //Lấy tên file và đuôi mở rộng của file
+//        String originalFilename = file.getOriginalFilename();
+//        String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+//        if (originalFilename.length() > 0) {
+//
+//            //Kiểm tra xem file có đúng định dạng không
+//            if (!extension.equals("png") && !extension.equals("jpg") && !extension.equals("gif") && !extension.equals("svg") && !extension.equals("jpeg")) {
+//                throw new BadRequestException("Không hỗ trợ định dạng file này!");
+//            }
+//            try {
+//                Image image = new Image();
+//                image.setId(UUID.randomUUID().toString());
+//                image.setName(file.getName());
+//                image.setSize(file.getSize());
+//                image.setType(extension);
+//                String link = "/media/static/" + image.getId() + "." + extension;
+////                String link = "https://mkyong.com/wp-content/uploads/2019/04/spring-boot-send-email-project.png";
+//                image.setLink(link);
+//                image.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+//                image.setCreatedBy(((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser());
+//
+//                //Tạo file
+//                File serveFile = new File(UPLOAD_DIR + "/" + image.getId() + "." + extension);
+//                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(serveFile));
+//                bos.write(file.getBytes());
+//                bos.close();
+//
+//                imageService.saveImage(image);
+//                return ResponseEntity.ok(link);
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                throw new InternalServerException("Có lỗi trong quá trình upload file!");
+//            }
+//        }
+//        throw new BadRequestException("File không hợp lệ!");
+//    }
+
     @PostMapping("/api/upload/files")
     public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) {
         //Tạo thư mục chứa ảnh nếu không tồn tại
-        File uploadDir = new File(UPLOAD_DIR);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
+//        File uploadDir = new File(UPLOAD_DIR);
+//        if (!uploadDir.exists()) {
+//            uploadDir.mkdirs();
+//        }
+        Map result = imageService.uploadImageCloudinaru(file);
 
-        //Lấy tên file và đuôi mở rộng của file
-        String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-        if (originalFilename.length() > 0) {
-
-            //Kiểm tra xem file có đúng định dạng không
-            if (!extension.equals("png") && !extension.equals("jpg") && !extension.equals("gif") && !extension.equals("svg") && !extension.equals("jpeg")) {
-                throw new BadRequestException("Không hỗ trợ định dạng file này!");
-            }
-            try {
-                Image image = new Image();
-                image.setId(UUID.randomUUID().toString());
-                image.setName(file.getName());
-                image.setSize(file.getSize());
-                image.setType(extension);
-                String link = "/media/static/" + image.getId() + "." + extension;
-//                String link = "https://mkyong.com/wp-content/uploads/2019/04/spring-boot-send-email-project.png";
-                image.setLink(link);
-                image.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-                image.setCreatedBy(((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser());
-
-                //Tạo file
-                File serveFile = new File(UPLOAD_DIR + "/" + image.getId() + "." + extension);
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(serveFile));
-                bos.write(file.getBytes());
-                bos.close();
-
-                imageService.saveImage(image);
-                return ResponseEntity.ok(link);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new InternalServerException("Có lỗi trong quá trình upload file!");
-            }
-        }
-        throw new BadRequestException("File không hợp lệ!");
+        return  ResponseEntity.ok((String) result.get("url"));
     }
 
     @GetMapping("/media/static/{filename:.+}")
@@ -96,6 +109,12 @@ public class ImageController {
     @DeleteMapping("/api/delete-image/{filename:.+}")
     public ResponseEntity<Object> deleteImage(@PathVariable String filename){
         imageService.deleteImage(UPLOAD_DIR,filename);
+        return ResponseEntity.ok("Xóa file thành công!");
+    }
+
+    @DeleteMapping("/api/delete-image2/{id}")
+    public ResponseEntity<Object> deleteImage2(@PathVariable String id){
+        imageService.deleteImageCloudinary(id);
         return ResponseEntity.ok("Xóa file thành công!");
     }
 }

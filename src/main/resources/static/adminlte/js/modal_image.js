@@ -76,13 +76,22 @@ $('.btn-delete-img').click(function () {
         toastr.warning("Vui lòng chọn ảnh cần xóa");
         return;
     }
-    let filename = url.replace('/media/static/', '');
+    let filename;
+    let apiDelete = "/api/delete-image2/";
+    if(url.startsWith("/media/static/")){
+        filename = url.replace('/media/static/', '');
+        apiDelete = "/api/delete-image/" + filename;
+    }else if(url.startsWith("https://res.cloudinary.com/")){
+        filename = url.slice(url.lastIndexOf("/")+1);
+        let fileId = filename.slice(0,filename.indexOf("."));
+        apiDelete = "/api/delete-image2/" + fileId;
+    }
     // Confirm
     let click = confirm("Bạn chắc chắn muốn xóa ảnh này?");
     if (click == true) {
         // Send api delete
         $.ajax({
-            url: '/api/delete-image/' + filename,
+            url: apiDelete,
             type: 'DELETE',
             contentType: "application/json; charset=utf-8",
             success: function (data) {

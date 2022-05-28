@@ -125,6 +125,14 @@
             <version>4.1.2</version>
         </dependency>
 
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44 &ndash;&gt;-->
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http44</artifactId>
+            <version>1.26.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
