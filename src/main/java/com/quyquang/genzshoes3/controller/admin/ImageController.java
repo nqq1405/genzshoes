@@ -77,44 +77,35 @@ public class ImageController {
 
     @PostMapping("/api/upload/files")
     public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) {
-        //Tạo thư mục chứa ảnh nếu không tồn tại
-//        File uploadDir = new File(UPLOAD_DIR);
-//        if (!uploadDir.exists()) {
-//            uploadDir.mkdirs();
-//        }
         Map result = imageService.uploadImageCloudinaru(file);
-
-        return  ResponseEntity.ok((String) result.get("url"));
+        return  ResponseEntity.ok(result.get("url"));
     }
 
-    @GetMapping("/media/static/{filename:.+}")
-    public ResponseEntity<Object> downloadFile(@PathVariable String filename) {
-        File file = new File(UPLOAD_DIR + "/" + filename);
-        if (!file.exists()) {
-            throw new NotFoundException("File không tồn tại!");
-        }
-
-        UrlResource resource;
-        try {
-            resource = new UrlResource(file.toURI());
-        } catch (MalformedURLException ex) {
-            throw new NotFoundException("File không tồn tại!");
-        }
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
-                .body(resource);
-    }
+//    @GetMapping("/media/static/{filename:.+}")
+//    public ResponseEntity<Object> downloadFile(@PathVariable String filename) {
+//        File file = new File(UPLOAD_DIR + "/" + filename);
+//        if (!file.exists()) {
+//            throw new NotFoundException("File không tồn tại!");
+//        }
+//
+//        UrlResource resource;
+//        try {
+//            resource = new UrlResource(file.toURI());
+//        } catch (MalformedURLException ex) {
+//            throw new NotFoundException("File không tồn tại!");
+//        }
+//
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
+//                .body(resource);
+//    }
 
     @DeleteMapping("/api/delete-image/{filename:.+}")
     public ResponseEntity<Object> deleteImage(@PathVariable String filename){
-        imageService.deleteImage(UPLOAD_DIR,filename);
+//        imageService.deleteImage(UPLOAD_DIR,filename);
+        imageService.deleteImageCloudinary(filename);
         return ResponseEntity.ok("Xóa file thành công!");
     }
 
-    @DeleteMapping("/api/delete-image2/{id}")
-    public ResponseEntity<Object> deleteImage2(@PathVariable String id){
-        imageService.deleteImageCloudinary(id);
-        return ResponseEntity.ok("Xóa file thành công!");
-    }
+
 }

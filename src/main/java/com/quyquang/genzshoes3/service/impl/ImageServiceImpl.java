@@ -35,7 +35,7 @@ public class ImageServiceImpl implements ImageService {
                 "cloud_name", "nqq-cloudinary",
                 "api_key", "558733855959418",
                 "api_secret", "JPxDqEkHUDBBpEfQm0ZV1VbNTm8"
-//                , "secure", true
+                , "secure", true
         ));
     }
 
@@ -83,8 +83,9 @@ public class ImageServiceImpl implements ImageService {
     @Override
     @Transactional(rollbackFor = IOException.class)
     public Map deleteImageCloudinary(String id) {
+        String fileId = id.substring(0, id.indexOf('.'));
         //Kiểm tra link
-        Optional<Image> image = imageRepository.findById(id);
+        Optional<Image> image = imageRepository.findById(fileId);
         if (image.isEmpty()) {
             throw new BadRequestException("File không tồn tại");
         }
@@ -97,7 +98,7 @@ public class ImageServiceImpl implements ImageService {
         imageRepository.delete(image.get());
 
         try {
-            Map resultMap = cloudinary.uploader().destroy(id, ObjectUtils.emptyMap());
+            Map resultMap = cloudinary.uploader().destroy(fileId, ObjectUtils.emptyMap());
             return resultMap;
         } catch (IOException e) {
             e.printStackTrace();
@@ -110,6 +111,11 @@ public class ImageServiceImpl implements ImageService {
         try {
             File file = convert(multipartFile);
             Map resultMap = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+            boolean isDeleted = file.delete();
+            if (isDeleted){
+                System.out.println("File successfully deleted");
+            }else
+                System.out.println("File doesn't exist");
 
             String originalFilename = multipartFile.getOriginalFilename();
             String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
