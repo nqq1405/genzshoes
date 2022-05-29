@@ -51,6 +51,7 @@
                         <div class="thumbnails"><img class="img-fluid" th:src="${order.productImg}" th:alt="${order.productName}"/></div>
                         <div class="product-info"><span class="name" th:text="${order.productName}"></span>
                             <div class="size"><span th:text="${order.sizeUs}"></span>US | <span th:text="${order.sizeVn}"></span>VN | <span th:text="${order.sizeCm}"></span>CM</div>
+                            <div>Số lượng: <span class="name" th:text="${quantity}"></span></div>
                         </div>
                     </div>
                     <div class="price asks-price"><span class="text-price" th:text="${order.productPrice}"></span> &#x20AB;</div>
@@ -63,7 +64,7 @@
                         </div>
                         <div class="price-wrapper">
                             <div class="sub-price-wrapper price">Tạm tính<span><span class="text-price" th:text="${order.productPrice}"></span> &#x20AB;</span></div>
-                            <div class="shipping-price-wrapper price">Khuyến mãi<span><span class="text-price" th:text="${order.productPrice} - ${order.totalPrice}"></span> &#x20AB;</span></div>
+                            <div class="shipping-price-wrapper price">Khuyến mãi<span><span class="text-price" th:text="${order.productPrice}*${quantity} - ${order.totalPrice}"></span> &#x20AB;</span></div>
                             <div class="total-price-wrapper price">Thành tiền<span class="total-price"><span class="text-price" th:text="${order.totalPrice}"></span> &#x20AB;</span></div>
                         </div>
                     </div>

@@ -114,6 +114,13 @@
                         <span class="desc-sub-title">Tình trạng: </span>
                         <span th:if="${canBuy}">Còn hàng</span>
                         <span th:unless="${canBuy}" style="color:#f04e40">Tạm hết hàng</span>
+                        <div th:if="${canBuy}">
+                            <span class="desc-sub-title">Số lượng: </span>
+                            <input class="quantity-input-custom" id="quantity-input-custom" type="number" value="1" width="50px">
+                        </div>
+                        <div th:if="${error}">
+                            <p class="text-danger">[[${error}]]</p>
+                        </div>
                     </div>
                     <hr class="divider">
 
@@ -367,7 +374,8 @@
                 if (size == null || size == "") {
                     toastr.warning("Sản phẩm tạm hết hàng. Vui lòng đặt hàng sau.");
                 } else {
-                    location.href = "/dat-hang?id="+[[${product.id}]]+"&size="+size;
+                    let quantity2 = document.getElementById('quantity-input-custom').value;
+                    location.href = "/dat-hang?id="+[[${product.id}]]+"&size="+size+"&quantity="+quantity2;
                 }
             } else {
                 toastr.warning("Vui lòng đăng nhập để đặt hàng");

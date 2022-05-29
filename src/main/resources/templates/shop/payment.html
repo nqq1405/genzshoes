@@ -56,8 +56,14 @@
                         <div class="pricing childs">
                             <h6 class="not-found-size" style="margin-top: 5px; color: #dc3545;"  th:styleappend="${notFoundSize} == true ? '' : 'display:none'">Size giày này đã hết. Vui lòng chọn size khác.</h6>
                             <div class="size-btn" data-toggle="modal" data-target="#modal-size-Choose">
-                                <button class="btn btn-primary size trans-btn"><span class="size-text">Size</span><span th:data-size="${size}" class="size-details">9US | 42.5VN | 26.2CM</span><i class="fas dropdown-arrow"></i></button>
+                                <button class="btn btn-primary size trans-btn">
+                                    <span class="size-text">Size</span>
+                                    <span th:data-size="${size}" class="size-details">9US | 42.5VN | 26.2CM</span>
+                                    <i class="fas dropdown-arrow"></i>
+                                </button>
                             </div>
+                            <div>Số lượng: <span class="name" >[[${quantity}]]</span> sản phẩm</div>
+
                             <div class="input-group" style="margin-top:30px">
                                 <input type="text" class="form-control" placeholder="Nhập mã khuyến mãi" id="in-coupon" th:value="${product.couponCode}">
                                 <div class="input-group-append">
@@ -66,7 +72,7 @@
                             </div>
                             <div class="coupon price-include">
                                 <div class="text">Tạm tính</div>
-                                <input class="form-control text-price-input" id="in-price" type="text" th:value="${product.price}" readonly/>
+                                <input class="form-control text-price-input" id="in-price" type="text" th:value="${product.price}*${quantity}" readonly/>
                             </div>
                             <div class="coupon price-include">
                                 <div class="text">Khuyến mãi</div>
@@ -128,14 +134,16 @@
     <script th:src="@{/shop/js/size-choose.js}"></script>
     <script th:inline="javascript">
         let price = [[${product.price}]];
+        let quantityProd = [[${quantity}]];
 
         let promotionValue = 0;
         let totalPrice = price;
 
         if ([[${product.couponCode}]] != null && [[${product.couponCode}]] != "") {
             totalPrice = [[${product.promotionPrice}]];
-            promotionValue = price - totalPrice;
+            promotionValue = (price - totalPrice)*quantityProd;
         }
+        totalPrice = totalPrice*quantityProd;
         $('#in-total-price').val(totalPrice);
         $('#in-promotion-value').val(promotionValue);
 
@@ -221,7 +229,8 @@
                     } else {
                         promotionValue = data.maximumDiscountValue;
                     }
-                    totalPrice = price - promotionValue;
+                    totalPrice = (price - promotionValue)*quantityProd;
+                    promotionValue = quantityProd > 1 ? promotionValue*quantityProd : promotionValue ;
                     $('#in-price').val(price);
                     $('#in-promotion-value').val(promotionValue);
                     $('#in-total-price').val(totalPrice);
@@ -264,6 +273,7 @@
                 addressInvalid.css('display', 'block');
                 addressInvalid.html('Vui lòng nhập địa chỉ nhận hàng');
                 isValid = false;
+
             }
             let size = $('.size-choose').data("id");
             if (size == null || size == "") {
@@ -281,7 +291,8 @@
                     coupon_code: couponCode,
                     total_price: totalPrice,
                     product_price: price,
-                    note:notes
+                    note:notes,
+                    quantity:quantityProd
                 }
                 var myJSON = JSON.stringify(req);
                 $.ajax({

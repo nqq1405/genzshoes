@@ -166,6 +166,8 @@ public class OrderController {
         if (order == null) {
             return "error/404";
         }
+        int quantity = orderService.getQuantityById(id, user.getId());
+        model.addAttribute("quantity", quantity);
         model.addAttribute("order", order);
 
         if (order.getStatus() == ORDER_STATUS) {

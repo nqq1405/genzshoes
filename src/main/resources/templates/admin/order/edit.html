@@ -124,7 +124,7 @@
                                             </div>
                                             <div class="row" style="margin-top: 10px;">
                                                 <div class="col-md-12">
-                                                    <div class="input-group">
+                                                    <div class="input-group">Địa chỉ người nhận
                                                         <textarea name="receiver-address" id="receiver-address" rows="5" th:text="${order.receiverAddress}" th:readonly="${order.status} != 1"></textarea>
                                                         <span class="invalid-feedback" id="invalid-feedback-address">Địa chỉ trống</span>
                                                     </div>
@@ -143,6 +143,7 @@
                                                         <th>Sản phẩm</th>
                                                         <th>Kích cỡ</th>
                                                         <th>Giá tiền</th>
+                                                        <th>Số lượng</th>
                                                         <th>Khuyến mãi</th>
                                                         <th>Mức giảm</th>
                                                         <th>Thành tiền</th>
@@ -160,7 +161,10 @@
                                                             </th:block>
                                                         </td>
                                                         <td>
-                                                            <span class="text-price" th:text="${order.price}"></span> đ
+                                                            <span class="text-price" th:text="${order.price}*${order.quantity}"></span> đ
+                                                        </td>
+                                                        <td>
+                                                            <span th:if="${order.quantity} > 0" th:text="${order.quantity}"></span>
                                                         </td>
                                                         <td>
                                                             <span th:if="${order.promotion} != null" th:text="${order.promotion.couponCode}"></span>
@@ -168,10 +172,12 @@
                                                         <td>
                                                             <div th:if="${order.promotion} != null">
                                                                 <th:block th:if="${order.promotion.discountType} == 1">
-                                                                    <span th:text="${order.promotion.discountValue}"></span> %
+                                                                    <span th:text="${order.promotion.discountValue}*${order.quantity}"></span> %
+                                                                    <div>Tối đa: <span th:text="${order.promotion.maximumDiscountValue}*${order.quantity}"></span> đ
+                                                                    </div>
                                                                 </th:block>
                                                                 <th:block th:if="${order.promotion.discountType} == 2">
-                                                                    <span class="text-price" th:text="${order.promotion.discountValue}"></span> đ
+                                                                    <span class="text-price" th:text="${order.promotion.discountValue}*${order.quantity}"></span> đ
                                                                 </th:block>
                                                             </div>
                                                         </td>
@@ -262,6 +268,10 @@
                                 <span class="text-price badge badge-warning" id="promotion-price">0</span>
                             </div>
                             <div class="display-info-price">
+                                <span>Số lượng</span>
+                                <span class="text-price badge badge-danger" id="quantity-price">0</span>
+                            </div>
+                            <div class="display-info-price">
                                 <span>Thành tiền</span>
                                 <span class="text-price badge badge-success" id="total-price">0</span>
                             </div>
@@ -287,6 +297,7 @@
             let productPrice = 0;
             let promotionPrice = 0;
             let totalPrice = 0;
+            let quantity = [[${order.quantity}]]
 
             function eventChangeProduct() {
                 let idProduct = $('#product').val();
@@ -342,9 +353,11 @@
                     totalPrice = productPrice;
                     promotionPrice = 0;
                 }
+                totalPrice = totalPrice*quantity;
 
-                $('#product-price').text(productPrice);
-                $('#promotion-price').text(promotionPrice);
+                $('#product-price').text(productPrice + "/1sp");
+                $('#promotion-price').text(promotionPrice + "/1sp");
+                $('#quantity-price').text(quantity);
                 $('#total-price').text(totalPrice);
             }
 

@@ -32,4 +32,7 @@ public interface OrderService {
     //Đếm số lượng đơn hàng
     long getCountOrder();
 
+    // lấy số lượng mua
+    int getQuantityById(long id, long userId);
+
 }

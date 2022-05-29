@@ -9,10 +9,7 @@ import com.quyquang.genzshoes3.model.dto.OrderInfoDTO;
 import com.quyquang.genzshoes3.model.request.CreateOrderRequest;
 import com.quyquang.genzshoes3.model.request.UpdateDetailOrder;
 import com.quyquang.genzshoes3.model.request.UpdateStatusOrderRequest;
-import com.quyquang.genzshoes3.repository.OrderRepository;
-import com.quyquang.genzshoes3.repository.ProductRepository;
-import com.quyquang.genzshoes3.repository.ProductSizeRepository;
-import com.quyquang.genzshoes3.repository.StatisticRepository;
+import com.quyquang.genzshoes3.repository.*;
 import com.quyquang.genzshoes3.service.OrderService;
 import com.quyquang.genzshoes3.service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +27,12 @@ import static com.quyquang.genzshoes3.config.Constants.*;
 
 @Controller
 public class OrderServiceImpl implements OrderService {
+
+    @Autowired
+    private ProductSizeRepository sizeRepository;
+
+    @Autowired
+    private PromotionRepository promotionRepository;
 
     @Autowired
     private ProductRepository productRepository;
@@ -76,6 +79,16 @@ public class OrderServiceImpl implements OrderService {
         if (product.get().getSalePrice() != createOrderRequest.getProductPrice()) {
             throw new BadRequestException("Giá sản phẩm thay đổi, Vui lòng đặt hàng lại!");
         }
+
+        if(sizeRepository.checkProductAndSizeAvailable(
+                createOrderRequest.getProductId(), createOrderRequest.getSize()).getQuantity() < createOrderRequest.getQuantity()){
+            throw new BadRequestException("Size sản phẩm này hiện tại không đủ hàng trong kho!!");
+        }
+        Optional<Promotion> promotion = promotionRepository.findByCouponCode(createOrderRequest.getCouponCode());
+        if (promotion.isEmpty()) {
+            throw new NotFoundException("Mã khuyến mãi không tồn tại!");
+        }
+        Promotion promotion1 = promotion.get();
         Order order = new Order();
         User user = new User();
         user.setId(userId);
@@ -90,9 +103,12 @@ public class OrderServiceImpl implements OrderService {
         order.setPrice(createOrderRequest.getProductPrice());
         order.setTotalPrice(createOrderRequest.getTotalPrice());
         order.setStatus(ORDER_STATUS);
-        order.setQuantity(1);
+        order.setQuantity(createOrderRequest.getQuantity());
         order.setProduct(product.get());
-
+        order.setPromotion(new Order.UsedPromotion(promotion1.getCouponCode(),
+                promotion1.getDiscountType(),
+                promotion1.getDiscountValue(),
+                promotion1.getMaximumDiscountValue()));
         orderRepository.save(order);
         return order;
 
@@ -197,11 +213,11 @@ public class OrderServiceImpl implements OrderService {
                 //Đơn hàng ở trạng thái đang vận chuyển
             } else if (updateStatusOrderRequest.getStatus() == DELIVERY_STATUS) {
                 //Trừ đi một sản phẩm
-                productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize());
+                productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize(), order.getQuantity());
                 //Đơn hàng ở trạng thái đã giao hàng
             } else if (updateStatusOrderRequest.getStatus() == COMPLETED_STATUS) {
                 //Trừ đi một sản phẩm và cộng một sản phẩm vào sản phẩm đã bán và cộng tiền
-                productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize());
+                productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize(), order.getQuantity());
                 productRepository.plusOneProductTotalSold(order.getProduct().getId());
                 statistic(order.getTotalPrice(), order.getQuantity(), order);
             } else if (updateStatusOrderRequest.getStatus() != CANCELED_STATUS) {
@@ -217,11 +233,11 @@ public class OrderServiceImpl implements OrderService {
                 //Đơn hàng ở trạng thái đã hủy
             } else if (updateStatusOrderRequest.getStatus() == RETURNED_STATUS) {
                 //Cộng lại một sản phẩm đã bị trừ
-                productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize());
+                productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize(), order.getQuantity());
                 //Đơn hàng ở trạng thái đã trả hàng
             } else if (updateStatusOrderRequest.getStatus() == CANCELED_STATUS) {
                 //Cộng lại một sản phẩm đã bị trừ
-                productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize());
+                productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize(), order.getQuantity());
             } else if (updateStatusOrderRequest.getStatus() != DELIVERY_STATUS) {
                 throw new BadRequestException("Không thế chuyển sang trạng thái này");
             }
@@ -230,7 +246,7 @@ public class OrderServiceImpl implements OrderService {
             //Đơn hàng đang ở trạng thái đã hủy
             if (updateStatusOrderRequest.getStatus() == RETURNED_STATUS) {
                 //Cộng một sản phẩm đã bị trừ và trừ đi một sản phẩm đã bán và trừ số tiền
-                productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize());
+                productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize(), order.getQuantity());
                 productRepository.minusOneProductTotalSold(order.getProduct().getId());
                 updateStatistic(order.getTotalPrice(), order.getQuantity(), order);
             } else if (updateStatusOrderRequest.getStatus() != COMPLETED_STATUS) {
@@ -320,6 +336,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public long getCountOrder() {
         return orderRepository.count();
+    }
+
+    @Override
+    public int getQuantityById(long id, long userId) {
+        return orderRepository.getQuantityByIdAnduserId(id,userId);
     }
 
     public void statistic(long amount, int quantity, Order order) {

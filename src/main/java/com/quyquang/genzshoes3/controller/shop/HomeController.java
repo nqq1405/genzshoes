@@ -9,6 +9,7 @@ import com.quyquang.genzshoes3.model.dto.PageableDTO;
 import com.quyquang.genzshoes3.model.dto.ProductInfoDTO;
 import com.quyquang.genzshoes3.model.request.CreateOrderRequest;
 import com.quyquang.genzshoes3.model.request.FilterProductRequest;
+import com.quyquang.genzshoes3.repository.ProductSizeRepository;
 import com.quyquang.genzshoes3.security.CustomUserDetails;
 import com.quyquang.genzshoes3.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ import static com.quyquang.genzshoes3.config.Constants.*;
 
 @Controller
 public class HomeController {
+
+    @Autowired
+    private ProductSizeRepository sizeRepository;
 
     @Autowired
     private ProductService productService;
@@ -111,9 +115,50 @@ public class HomeController {
         return "shop/detail";
     }
 
-    @GetMapping("/dat-hang")
-    public String getCartPage(Model model, @RequestParam String id,@RequestParam int size){
+    private void ham1(String id, Model model){
+        //Lấy thông tin sản phẩm
+        DetailProductInfoDTO product;
+        product = productService.getDetailProductById(id);
+        model.addAttribute("product", product);
 
+        //Lấy sản phẩm liên quan
+        List<ProductInfoDTO> relatedProducts = productService.getRelatedProducts(id);
+        model.addAttribute("relatedProducts", relatedProducts);
+
+        //Lấy danh sách nhãn hiệu
+        List<Brand> brands = brandService.getListBrand();
+        model.addAttribute("brands",brands);
+
+        // Lấy size có sẵn
+        List<Integer> availableSizes = productService.getListAvailableSize(id);
+        model.addAttribute("availableSizes", availableSizes);
+        if (!availableSizes.isEmpty()) {
+            model.addAttribute("canBuy", true);
+        } else {
+            model.addAttribute("canBuy", false);
+        }
+
+        //Lấy danh sách size giầy
+        model.addAttribute("sizeVn", SIZE_VN);
+        model.addAttribute("sizeUs", SIZE_US);
+        model.addAttribute("sizeCm", SIZE_CM);
+    }
+
+    @GetMapping("/dat-hang")
+    public Object getCartPage(Model model, @RequestParam String id,@RequestParam int size, @RequestParam(defaultValue = "1") int quantity){
+        System.out.println(quantity);
+        if(quantity < 0){
+            ham1(id,model);
+
+            model.addAttribute("error", "Số lượng không hợp lệ!!");
+            return "shop/detail";
+        }else {
+            if(sizeRepository.checkProductAndSizeAvailable(id, size).getQuantity() < quantity){
+                ham1(id,model);
+                model.addAttribute("error", "Size sản phẩm này hiện tại không đủ hàng trong kho!!");
+                return "shop/detail";
+            }
+        }
         //Lấy chi tiết sản phẩm
         DetailProductInfoDTO product;
         try {
@@ -141,6 +186,7 @@ public class HomeController {
             }
         }
         model.addAttribute("notFoundSize", notFoundSize);
+        model.addAttribute("quantity", quantity);
 
         //Lấy danh sách size
         model.addAttribute("sizeVn", SIZE_VN);

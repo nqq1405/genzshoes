@@ -46,4 +46,6 @@ public class CreateOrderRequest {
 
     private String note;
 
+    private int quantity;
+
 }
