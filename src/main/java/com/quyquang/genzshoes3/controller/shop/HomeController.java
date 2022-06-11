@@ -147,7 +147,7 @@ public class HomeController {
     @GetMapping("/dat-hang")
     public Object getCartPage(Model model, @RequestParam String id,@RequestParam int size, @RequestParam(defaultValue = "1") int quantity){
         System.out.println(quantity);
-        if(quantity < 0){
+        if(quantity <= 0){
             ham1(id,model);
 
             model.addAttribute("error", "Số lượng không hợp lệ!!");
@@ -155,7 +155,7 @@ public class HomeController {
         }else {
             if(sizeRepository.checkProductAndSizeAvailable(id, size).getQuantity() < quantity){
                 ham1(id,model);
-                model.addAttribute("error", "Size sản phẩm này hiện tại không đủ hàng trong kho!!");
+                model.addAttribute("error", "Size sản phẩm này hiện tại còn "+sizeRepository.checkProductAndSizeAvailable(id, size).getQuantity()+" hàng trong kho!!");
                 return "shop/detail";
             }
         }

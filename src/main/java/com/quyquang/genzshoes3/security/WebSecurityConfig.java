@@ -105,7 +105,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutUrl("/api/logout")
                 .logoutSuccessUrl("/")
-                .deleteCookies("JWT_TOKEN")
+                .deleteCookies("JWT_TOKEN","JSESSIONID")
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)

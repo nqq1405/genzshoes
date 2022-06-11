@@ -63,7 +63,7 @@
                             <div class="phone" th:text="${order.receiverPhone}"></div>
                         </div>
                         <div class="price-wrapper">
-                            <div class="sub-price-wrapper price">Tạm tính<span><span class="text-price" th:text="${order.productPrice}"></span> &#x20AB;</span></div>
+                            <div class="sub-price-wrapper price">Tạm tính<span><span class="text-price" th:text="${order.productPrice}*${quantity}"></span> &#x20AB;</span></div>
                             <div class="shipping-price-wrapper price">Khuyến mãi<span><span class="text-price" th:text="${order.productPrice}*${quantity} - ${order.totalPrice}"></span> &#x20AB;</span></div>
                             <div class="total-price-wrapper price">Thành tiền<span class="total-price"><span class="text-price" th:text="${order.totalPrice}"></span> &#x20AB;</span></div>
                         </div>

@@ -82,7 +82,8 @@ public class OrderServiceImpl implements OrderService {
 
         if(sizeRepository.checkProductAndSizeAvailable(
                 createOrderRequest.getProductId(), createOrderRequest.getSize()).getQuantity() < createOrderRequest.getQuantity()){
-            throw new BadRequestException("Size sản phẩm này hiện tại không đủ hàng trong kho!!");
+            throw new BadRequestException("Size sản phẩm này hiện tại "+ sizeRepository.checkProductAndSizeAvailable(
+                    createOrderRequest.getProductId(), createOrderRequest.getSize()).getQuantity() +" trong kho!!");
         }
         Optional<Promotion> promotion = promotionRepository.findByCouponCode(createOrderRequest.getCouponCode());
         if (promotion.isEmpty()) {
@@ -218,7 +219,7 @@ public class OrderServiceImpl implements OrderService {
             } else if (updateStatusOrderRequest.getStatus() == COMPLETED_STATUS) {
                 //Trừ đi một sản phẩm và cộng một sản phẩm vào sản phẩm đã bán và cộng tiền
                 productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize(), order.getQuantity());
-                productRepository.plusOneProductTotalSold(order.getProduct().getId());
+                productRepository.plusOneProductTotalSold(order.getProduct().getId(), order.getQuantity());
                 statistic(order.getTotalPrice(), order.getQuantity(), order);
             } else if (updateStatusOrderRequest.getStatus() != CANCELED_STATUS) {
                 throw new BadRequestException("Không thế chuyển sang trạng thái này");
@@ -228,7 +229,7 @@ public class OrderServiceImpl implements OrderService {
             //Đơn hàng ở trạng thái đã giao hàng
             if (updateStatusOrderRequest.getStatus() == COMPLETED_STATUS) {
                 //Cộng một sản phẩm vào sản phẩm đã bán và cộng tiền
-                productRepository.plusOneProductTotalSold(order.getProduct().getId());
+                productRepository.plusOneProductTotalSold(order.getProduct().getId(), order.getQuantity());
                 statistic(order.getTotalPrice(), order.getQuantity(), order);
                 //Đơn hàng ở trạng thái đã hủy
             } else if (updateStatusOrderRequest.getStatus() == RETURNED_STATUS) {

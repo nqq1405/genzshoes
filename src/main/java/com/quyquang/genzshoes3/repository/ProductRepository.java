@@ -70,8 +70,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     //Cộng một sản phẩm đã bán
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "Update product set total_sold = total_sold + 1 where id = ?1")
-    void plusOneProductTotalSold(String productId);
+    @Query(nativeQuery = true, value = "Update product set total_sold = total_sold + ?2 where id = ?1")
+    void plusOneProductTotalSold(String productId, int quantity);
 
     //Tìm kiến sản phẩm theo size
     @Query(nativeQuery = true, name = "searchProductBySize")

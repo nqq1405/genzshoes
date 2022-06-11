@@ -18,6 +18,7 @@ import com.quyquang.genzshoes3.security.JwtTokenUtil;
 import com.quyquang.genzshoes3.service.UserService;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -59,13 +60,16 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    JavaMailSender mailSender;
+    JavaMailSender javaMailSender;
 
     @Autowired
     UserRepository userRepository;
 
     @Autowired
     VerifyRepository verifyRepository;
+
+    @Value("${spring.mail.username}")
+    private String sender;
 
     @GetMapping("/users")
     public ResponseEntity<Object> getListUsers() {
@@ -111,8 +115,8 @@ public class UserController {
             List<String> roles = user.getUser().getRoles();
             if(roles.contains("ADMIN"))
                 throw new BadRequestException("Email hoặc mật khẩu không chính xác!");
-            if(user.getUser().getProvider() == Provider.GOOGLE)
-                throw new BadRequestException("Tài khoản của bạn trước đó đã đăng nhâp bằng google hãy sử dụng cách thức đăng nhập bằng google để tiếp tục");
+//            if(user.getUser().getProvider() == Provider.GOOGLE)
+//                throw new BadRequestException("Tài khoản của bạn trước đó đã đăng nhâp bằng google hãy sử dụng cách thức đăng nhập bằng google để tiếp tục.");
 
             //Gen token
             String token = jwtTokenUtil.generateToken((CustomUserDetails) authentication.getPrincipal());
@@ -182,17 +186,19 @@ public class UserController {
             verify.setExpiredAt(LocalDateTime.now().plusMinutes(Constants.TIME_EXPIRED_VERIFY));
             verifyRepository.save(verify);
             model.addAttribute("message", "chúng tôi đã gửi 1 email đặt lại mật khẩu đến email của bạn.");
-        } catch (UnsupportedEncodingException | MessagingException e) {
+        } catch (UnsupportedEncodingException | MessagingException  e) {
             System.out.println(e);
             model.addAttribute("error", "Error while sending email");
+        } catch (Exception e) {
+            System.out.println(e);
         }
         return "shop/forgot_password";
     }
 
     private void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom("resetpass1405@gmail.com", "Hỗ trợ genzShoes");
+        helper.setFrom(sender, "Genz Shoes");
         helper.setTo(recipientEmail);
 
         String subject = "Đặt lại mật khẩu";
@@ -206,7 +212,7 @@ public class UserController {
                 + "hoặc bạn đã không thực hiện yêu cầu.</p>";
         helper.setSubject(subject);
         helper.setText(content, true);
-        mailSender.send(message);
+        javaMailSender.send(message);
     }
 
     private String getSiteURL(HttpServletRequest req) {
