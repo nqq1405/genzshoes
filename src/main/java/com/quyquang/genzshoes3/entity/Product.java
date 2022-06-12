@@ -71,7 +71,7 @@ import java.util.List;
         name = "getListNewProducts",
         resultSetMapping = "productInfoDto",
         query = "SELECT p.id, p.name, p.sale_price as price, p.product_view as views, p.slug, p.total_sold, p.images ->> '$[0]' AS images " +
-                "FROM product p WHERE p.status = 1 " +
+                "FROM product p WHERE p.status = 1 AND p.created_at BETWEEN date_sub(now(), interval 8 week) AND now()" +
                 "order by p.created_at DESC limit ?1"
 )
 @NamedNativeQuery(
@@ -79,7 +79,7 @@ import java.util.List;
         resultSetMapping = "productInfoDto",
         query = "SELECT p.id, p.name, p.sale_price as price, p.product_view as views, p.slug, p.total_sold, p.images ->> '$[0]' AS images " +
                 "FROM product p " +
-                "WHERE p.status = 1 " +
+                "WHERE p.status = 1 AND p.created_at BETWEEN date_sub(now(), interval 8 week) AND now()" +
                 "ORDER BY total_sold DESC LIMIT ?1"
 )
 
@@ -88,7 +88,7 @@ import java.util.List;
         resultSetMapping = "productInfoDto",
         query = "SELECT p.id, p.name, p.sale_price as price, p.product_view as views, p.slug, p.total_sold, p.images ->> '$[0]' AS images " +
                 "FROM product p " +
-                "WHERE p.status = 1 " +
+                "WHERE p.status = 1 AND p.created_at BETWEEN date_sub(now(), interval 8 week) AND now()" +
                 "ORDER BY product_view DESC LIMIT ?1"
 )
 

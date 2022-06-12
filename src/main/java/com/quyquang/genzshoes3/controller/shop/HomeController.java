@@ -53,15 +53,15 @@ public class HomeController {
     @GetMapping
     public String homePage(Model model){
 
-        //Lấy 5 sản phẩm mới nhất
+        //Lấy sản phẩm mới nhất limit 8
         List<ProductInfoDTO> newProducts = productService.getListNewProducts();
         model.addAttribute("newProducts", newProducts);
 
-        //Lấy 5 sản phẩm bán chạy nhất
+        //Lấy sản phẩm bán chạy nhất limit 10
         List<ProductInfoDTO> bestSellerProducts = productService.getListBestSellProducts();
         model.addAttribute("bestSellerProducts", bestSellerProducts);
 
-        //Lấy 5 sản phẩm có lượt xem nhiều
+        //Lấy sản phẩm có lượt xem nhiều limit 8
         List<ProductInfoDTO> viewProducts = productService.getListViewProducts();
         model.addAttribute("viewProducts", viewProducts);
 
