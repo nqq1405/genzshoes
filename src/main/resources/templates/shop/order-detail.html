@@ -42,6 +42,9 @@
                 <div class="header"><a class="go-back-previous-page" href="/tai-khoan/lich-su-giao-dich"><i class="fas fa-chevron-left"></i> Trở lại</a>
                     <div class="order-status-wrapper">
                         <div class="order-number-wrapper">Mã đơn <span class="order-number" th:text="'#'+${order.id}"></span></div>
+                        <div th:if="${date != null}">
+                            <span>[[${date}]]</span>
+                        </div>
                         <div class="status" th:text="${order.statusText}"></div>
                     </div>
                 </div>

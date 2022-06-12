@@ -23,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.quyquang.genzshoes3.config.Constants.*;
@@ -135,12 +136,12 @@ public class OrderController {
     }
 
     @GetMapping("/tai-khoan/lich-su-giao-dich")
-    public String getOrderHistoryPage(Model model){
+    public String getOrderHistoryPage(Model model) {
 
         //Get list order pending
-        User user =((CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
-        List<OrderInfoDTO> orderList = orderService.getListOrderOfPersonByStatus(ORDER_STATUS,user.getId());
-        model.addAttribute("orderList",orderList);
+        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        List<OrderInfoDTO> orderList = orderService.getListOrderOfPersonByStatus(ORDER_STATUS, user.getId());
+        model.addAttribute("orderList", orderList);
 
         return "shop/order_history";
     }
@@ -167,6 +168,14 @@ public class OrderController {
             return "error/404";
         }
         int quantity = orderService.getQuantityById(id, user.getId());
+        try {
+            String date = orderService.findOrderById(id)
+                    .getCreatedAt().toLocalDateTime()
+                    .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
+            model.addAttribute("date", date);
+        }catch (Exception e){
+            System.out.println(e);
+        }
         model.addAttribute("quantity", quantity);
         model.addAttribute("order", order);
 
