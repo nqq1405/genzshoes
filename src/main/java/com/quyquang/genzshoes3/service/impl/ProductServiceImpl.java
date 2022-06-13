@@ -123,6 +123,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product result = ProductMapper.toProduct(createProductRequest);
         result.setId(id);
+        result.setCreatedAt(product.get().getCreatedAt());
         result.setModifiedAt(new Timestamp(System.currentTimeMillis()));
         try {
             productRepository.save(result);
