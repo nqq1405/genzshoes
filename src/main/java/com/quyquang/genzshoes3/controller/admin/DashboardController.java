@@ -1,10 +1,8 @@
 package com.quyquang.genzshoes3.controller.admin;
 
-import com.quyquang.genzshoes3.model.dto.ChartDTO;
-import com.quyquang.genzshoes3.model.dto.StatisticDTO;
-import com.quyquang.genzshoes3.model.request.FilterDayByDay;
-import com.quyquang.genzshoes3.repository.*;
-import com.quyquang.genzshoes3.service.*;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +13,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.servlet.http.HttpServletRequestWrapper;
-import java.util.Date;
-import java.util.List;
+import com.quyquang.genzshoes3.model.dto.ChartDTO;
+import com.quyquang.genzshoes3.model.dto.StatisticDTO;
+import com.quyquang.genzshoes3.model.request.FilterDayByDay;
+import com.quyquang.genzshoes3.repository.BrandRepository;
+import com.quyquang.genzshoes3.repository.CategoryRepository;
+import com.quyquang.genzshoes3.repository.ProductRepository;
+import com.quyquang.genzshoes3.repository.StatisticRepository;
+import com.quyquang.genzshoes3.repository.UserRepository;
+import com.quyquang.genzshoes3.service.BrandService;
+import com.quyquang.genzshoes3.service.CategoryService;
+import com.quyquang.genzshoes3.service.OrderService;
+import com.quyquang.genzshoes3.service.PostService;
+import com.quyquang.genzshoes3.service.ProductService;
 
 @Controller
 public class DashboardController {

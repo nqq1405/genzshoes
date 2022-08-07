@@ -1,10 +1,13 @@
 package com.quyquang.genzshoes3.controller.admin;
 
-import com.quyquang.genzshoes3.entity.User;
-import com.quyquang.genzshoes3.exception.BadRequestException;
-import com.quyquang.genzshoes3.security.CustomUserDetails;
-import com.quyquang.genzshoes3.security.JwtTokenUtil;
-import com.quyquang.genzshoes3.service.UserService;
+import static com.quyquang.genzshoes3.config.Constants.MAX_AGE_COOKIE;
+
+import java.util.List;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +20,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-
-import static com.quyquang.genzshoes3.config.Constants.MAX_AGE_COOKIE;
+import com.quyquang.genzshoes3.entity.User;
+import com.quyquang.genzshoes3.security.CustomUserDetails;
+import com.quyquang.genzshoes3.security.JwtTokenUtil;
+import com.quyquang.genzshoes3.service.UserService;
 
 @Controller
 public class AdminUserController {

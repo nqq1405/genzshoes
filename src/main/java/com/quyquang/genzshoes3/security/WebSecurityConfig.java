@@ -1,9 +1,9 @@
 package com.quyquang.genzshoes3.security;
 
-import com.quyquang.genzshoes3.entity.Provider;
-import com.quyquang.genzshoes3.model.dto.CustomOauth2User;
-import com.quyquang.genzshoes3.service.UserService;
-import com.quyquang.genzshoes3.service.impl.CustomOAuth2UserService;
+import static com.quyquang.genzshoes3.config.Constants.MAX_AGE_COOKIE;
+
+import javax.servlet.http.Cookie;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,20 +14,15 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static com.quyquang.genzshoes3.config.Constants.MAX_AGE_COOKIE;
+import com.quyquang.genzshoes3.entity.Provider;
+import com.quyquang.genzshoes3.model.dto.CustomOauth2User;
+import com.quyquang.genzshoes3.service.UserService;
+import com.quyquang.genzshoes3.service.impl.CustomOAuth2UserService;
 
 @EnableWebSecurity
 @Configuration
