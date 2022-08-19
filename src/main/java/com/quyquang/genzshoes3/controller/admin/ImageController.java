@@ -1,30 +1,21 @@
 package com.quyquang.genzshoes3.controller.admin;
 
-import com.quyquang.genzshoes3.entity.Image;
-import com.quyquang.genzshoes3.exception.BadRequestException;
-import com.quyquang.genzshoes3.exception.InternalServerException;
-import com.quyquang.genzshoes3.exception.NotFoundException;
-import com.quyquang.genzshoes3.security.CustomUserDetails;
-import com.quyquang.genzshoes3.service.ImageService;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.MalformedURLException;
-import java.sql.Timestamp;
-import java.util.Map;
-import java.util.UUID;
+import com.quyquang.genzshoes3.service.ImageService;
 
 @RestController
 public class ImageController {
-    private static String UPLOAD_DIR = System.getProperty("user.home") + "/media/upload";
+    // private static String UPLOAD_DIR = System.getProperty("user.home") + "/media/upload";
 
     @Autowired
     private ImageService imageService;
@@ -77,7 +68,7 @@ public class ImageController {
 
     @PostMapping("/api/upload/files")
     public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) {
-        Map result = imageService.uploadImageCloudinaru(file);
+        Map<?,?> result = imageService.uploadImageCloudinaru(file);
         return  ResponseEntity.ok(result.get("url"));
     }
 

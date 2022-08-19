@@ -1,22 +1,18 @@
 package com.quyquang.genzshoes3.controller.shop;
 
-import com.quyquang.genzshoes3.config.Constants;
-import com.quyquang.genzshoes3.entity.Provider;
-import com.quyquang.genzshoes3.entity.User;
-import com.quyquang.genzshoes3.entity.Verify;
-import com.quyquang.genzshoes3.exception.BadRequestException;
-import com.quyquang.genzshoes3.model.dto.UserDTO;
-import com.quyquang.genzshoes3.model.mapper.UserMapper;
-import com.quyquang.genzshoes3.model.request.ChangePasswordRequest;
-import com.quyquang.genzshoes3.model.request.CreateUserRequest;
-import com.quyquang.genzshoes3.model.request.LoginRequest;
-import com.quyquang.genzshoes3.model.request.UpdateProfileRequest;
-import com.quyquang.genzshoes3.repository.UserRepository;
-import com.quyquang.genzshoes3.repository.VerifyRepository;
-import com.quyquang.genzshoes3.security.CustomUserDetails;
-import com.quyquang.genzshoes3.security.JwtTokenUtil;
-import com.quyquang.genzshoes3.service.UserService;
-import net.bytebuddy.utility.RandomString;
+import static com.quyquang.genzshoes3.config.Constants.MAX_AGE_COOKIE;
+
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
@@ -35,17 +31,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
-import java.util.List;
+import com.quyquang.genzshoes3.config.Constants;
+import com.quyquang.genzshoes3.entity.User;
+import com.quyquang.genzshoes3.entity.Verify;
+import com.quyquang.genzshoes3.exception.BadRequestException;
+import com.quyquang.genzshoes3.model.dto.UserDTO;
+import com.quyquang.genzshoes3.model.mapper.UserMapper;
+import com.quyquang.genzshoes3.model.request.ChangePasswordRequest;
+import com.quyquang.genzshoes3.model.request.CreateUserRequest;
+import com.quyquang.genzshoes3.model.request.LoginRequest;
+import com.quyquang.genzshoes3.model.request.UpdateProfileRequest;
+import com.quyquang.genzshoes3.repository.UserRepository;
+import com.quyquang.genzshoes3.repository.VerifyRepository;
+import com.quyquang.genzshoes3.security.CustomUserDetails;
+import com.quyquang.genzshoes3.security.JwtTokenUtil;
+import com.quyquang.genzshoes3.service.UserService;
 
-import static com.quyquang.genzshoes3.config.Constants.MAX_AGE_COOKIE;
+import net.bytebuddy.utility.RandomString;
 
 @Controller
 public class UserController {
